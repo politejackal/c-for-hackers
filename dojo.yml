@@ -1,29 +1,35 @@
 id: c-for-hackers
 name: C for Hackers
 description: |
-  Learn C through a hacker's eyes, no prior programming experience needed, but you need to be comfortable with the terminal; do Linux Luminarium first!
+  Learn C from a hacker's eyes. No programming experience needed,
+  but you should be comfortable in the terminal: finish some of the
+  Linux Luminarium first.
 
-  After finishing this dojo, you will understand how the C language works from the inside out, and be ready to find bugs!
-  
-  Here are some general tips for this dojo:
-
-- As usual, every challenge lives in the `/challenge` directory.
-
-- This dojo consists of four types of challenges:
-
-  1. **Read:** Look at some C code and answer what it does.
-  2. **Write:** Write a C program. A checker tests it and gives you the flag.
-  3. **Fix:** You get a broken program, and you fix it so it passes the checker.
-  4. **Break:** You are given a program with a bug. Find a way to make it misbehave, or do whatever the challenge asks for!
-
-  The first three teach you the language. The fourth one teaches you to think like a hacker, and that's where this dojo is heading.
-
-- The flag is in the `/flag` file. `cat`ting it won't give you the flag, haha. You will get a `Permission denied` error.
-
-- You already know why from Linux Luminarium: the file belongs to `root`, and you are `hacker`.
-
-- So every challenge has the same shape: a privileged program stands between you and the flag. You get the flag when you satisfy its conditions!
+  After finishing this dojo, you will hopefully understand how the C
+  language works from the inside out, and be ready to find bugs!
 award:
   emoji: 🧨
 
-modules: []
+modules:
+  - id: before-you-begin
+    name: Before You Begin
+    description: |
+      Here are some general tips for this dojo:
+
+      - As usual, every challenge lives in the `/challenge` directory.
+
+      - This dojo consists of four types of challenges:
+
+        1. **Read:** Look at some C code and answer what it does.
+        2. **Write:** Write a C program. A checker tests it and gives you the flag.
+        3. **Fix:** You get a broken program, and you fix it so it passes the checker.
+        4. **Break:** You are given a program with a bug. Find a way to make it misbehave, or do whatever the challenge asks for!
+
+        The first three teach you the language. The fourth one teaches you to think like a hacker, and that's where this dojo is heading.
+
+      - The flag is in the `/flag` file. `cat`ting it won't give you the flag, haha. You will get a `Permission denied` error.
+
+      - You already know why from Linux Luminarium: the file belongs to `root`, and you are `hacker`.
+
+      - So every challenge has the same shape: a privileged program stands between you and the flag. You get the flag when you satisfy its conditions!
+    challenges: []
