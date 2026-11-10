@@ -1,10 +1,9 @@
 id: c-for-hackers
 name: C for Hackers
 description: |
-  Learn C through a hacker's eyes, no prior knowledge needed.
+  Learn C through a hacker's eyes, anybody who has done some part of the Linux Luminarium dojo and is comfortable with the terminal should be fine and be able to take the course!
 
-  After finishing this dojo, you will hopefully understand how the C
-  language works from the inside out, and be ready to find bugs!
+  After finishing this dojo, you will hopefully understand how the C language works from the inside out, and be ready to find bugs!
 award:
   emoji: 🧨
 
