@@ -337,7 +337,7 @@ modules:
 
           1. **Letters and digits are in order.** A is 65, B is 66, and so on. Same for a to z, and 0 to 9. Know where a group starts and you are good to go.
           2. **Upper and lower case are exactly 32 apart.** A is 65 and a is 97. In hex that's `0x41` and `0x61`, a difference of `0x20`, which is a single bit: recall, the 32s place. Flip that one bit and you change the case. Bit flipping is taught properly in the Computing 101 dojo!
-          3. **The character 5 is not the number 5.** The character `5` is stored as 53, because the digits start at 48.
+          3. **The character 5 is not the number 5.** The character `5` is stored as 53, because the digits start at 48, and they are in order too.
 
           ## Text is just bytes in a row
 
@@ -375,3 +375,104 @@ modules:
           ASCII covers only English letters. Other alphabets and emoji use Unicode, which is something like a much bigger ASCII. It is usually stored as UTF-8, where one character can take several bytes. UTF-8 was designed so that its first 128 characters are exactly the same as ASCII's, so everything taught here still works there.
 
           Run `/challenge/run` to get the flag. It will ask you to turn bytes into text, text into bytes, flip the case of a letter, and watch out for the digit trap!
+      - id: twos-complement
+        name: Two's Complement
+        description: |
+          Alright. So we know a byte can hold any value from 0 to 255. So how the hell do you store -5? There is no minus sign in memory. Only zeroes and ones.
+
+          One idea is to use the leftmost bit as a sign: `0` for plus and `1` for minus. This is cool, but it gives us a problem. There are now two zeroes, +0 and -0. In computers, this is bad news. It leads to all sorts of problems which this challenge is not built around, so let's not go into it right now. Another problem is that it makes addition messy, because the computer would have to treat the sign bit differently from all the other bits.
+
+          ## Two's complement
+
+          Here is the trick somebody smarter than us discovered. It's known as **two's complement**. Instead of making the MSB, the most significant bit, a sign, we treat it as -128. So if only the leftmost bit is ON, like `10000000`, we have -128. If we also switch ON some other bit, like the rightmost one, we get -128 + 1, which is -127. And the good news is that there is just one zero: `00000000`. Cool.
+
+          Now recall that these are just zeroes and ones, and it's up to us how to see them. When we see the leftmost bit as worth -128, it is called a **signed** byte. When we see it normally, with the leftmost bit worth 128, it is called an **unsigned** byte.
+
+          So how do you actually read a signed byte? Exactly like you learned in the first lesson! Same columns, same adding. The only thing that changed is that the leftmost column is worth -128 instead of 128.
+
+          Let's read `11111011`:
+
+          ```
+          Place   -128   64   32   16   8   4   2   1
+          Bit     1      1    1    1    1   0   1   1
+          ```
+
+          -128 + 64 + 32 + 16 + 8 + 2 + 1 = -5
+
+          So `11111011` is -5. That's how you store -5 with nothing but zeroes and ones!
+
+          ## Positive or negative? Just look at the first bit
+
+          You don't even need to do the math to know the sign.
+
+          - If the leftmost bit is `1`, the number is negative. Why? Because -128 is ON, and all the other columns together only add up to 127, so they can never bring it back up to zero or above.
+          - If the leftmost bit is `0`, the number is positive, and you read it exactly like before. `01000001` is still 65.
+
+          ## How big and how small can it get?
+
+          - The biggest value is when everything is ON except the -128: `01111111` = 127.
+          - The smallest value is when only the -128 is ON: `10000000` = -128.
+
+          So a signed byte can hold anything from -128 to 127. That's still 256 values, just like before. We didn't get more room, we just moved half of it below zero. And notice it's a bit weird: there is a -128 but there is no +128.
+
+          ## How to make a number negative
+
+          Okay, so reading is easy. But what if you have 5 and you want to write -5? There is a simple recipe with just two steps:
+
+          1. Flip every bit. Every `0` becomes `1` and every `1` becomes `0`.
+          2. Add 1.
+
+          Let's do it with 5:
+
+          ```
+          5            00000101
+          Flip         11111010
+          Add 1        11111011
+          ```
+
+          And `11111011` is -5, the same byte we read earlier. It works!
+
+          The cool part is that the same recipe works backwards too. Flip `11111011` and you get `00000100`, add 1 and you get `00000101`, which is 5 again.
+
+          ## Three bytes you will see everywhere
+
+          ```
+          Hex    Binary     Signed value
+          0x7F   01111111   127    (the biggest)
+          0x80   10000000   -128   (the smallest)
+          0xFF   11111111   -1
+          ```
+
+          Especially remember that last one. When every bit is ON, the signed value is -1. You will see `0xFF` a lot.
+
+          ## So why did we pick two's complement?
+
+          Because addition just works, with no special rules at all. Let's add 5 and -5:
+
+          ```
+             00000101     (5)
+           + 11111011     (-5)
+           ----------
+           1 00000000
+          ```
+
+          We got 9 bits, but a byte can only hold 8. So the extra `1` on the left falls off the edge, and what's left is `00000000`. Zero! Exactly what 5 + (-5) should be. The computer didn't have to know anything about signs. It just added the bits like normal.
+
+          Recall the overflow from the first lesson, where the carried digit falls off the edge? Here that same thing is not a bug, it's what makes this whole thing work.
+
+          ## Same bits, two meanings
+
+          Now look at `11111111` again.
+
+          - Read it as an **unsigned** byte and it's 255.
+          - Read it as a **signed** byte and it's -1.
+
+          So which one is it? Both! Just like in the ASCII lesson, the byte doesn't know what it means. It's the program that decides how to read it. In C, you will tell the program which one you want, and choosing wrong is where the fun begins.
+
+          ## Why does a hacker care?
+
+          - **Signed overflow.** What is 127 + 1 in a signed byte? `01111111` + 1 is `10000000`, which is -128. So a number that was supposed to keep getting bigger suddenly became very negative.
+          - **Negative numbers that sneak past checks.** Imagine a program checks "is the size less than 100?". Well, -1 is less than 100, so it passes. But if the program then reads that same -1 as unsigned, it becomes a huge number. A lot of real bugs are exactly this.
+          - **Spotting -1.** `0xFF`, `0xFFFF` and `0xFFFFFFFF` are all -1, just in different sizes. And -1 is what a lot of C functions give you back when something went wrong.
+
+          By the way, I only used 1 byte here to keep it simple, but the same trick works for any size. The leftmost bit is always the negative one.
