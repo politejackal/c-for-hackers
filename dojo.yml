@@ -1,17 +1,92 @@
 id: c-for-hackers
 name: C for Hackers
 description: |
-  Learn C through a hacker's eyes. No programming experience needed, but you should be comfortable with the terminal: finish Linux Luminarium first.
+  Learn C from a hacker's eyes. No programming experience needed,
+  but you should be comfortable in the terminal: finish some of the
+  Linux Luminarium first.
 
-  Challenges are of four types:
+  Challenges come in four types:
 
-  - **Read:** say what the C code does.
+  - **Read:** say what a piece of C code does.
   - **Write:** write a program that passes the checker.
   - **Fix:** repair a broken program.
   - **Break:** find the bug and make the program misbehave.
 
-  The first three teach you the language. The fourth teaches you to think like a hacker, and that's where this dojo is heading!
+  The first three teach you the language. The fourth teaches you to
+  think like a hacker, and that's where this dojo is heading!
 award:
   emoji: 🧨
+image: pwncollege/challenge-simple
 
-modules: []
+modules:
+  - id: bits-and-bytes
+    name: Bits and Bytes
+    description: |
+      Before writing any C, learn what a computer actually stores:
+      bits, bytes, binary, and hex.
+    challenges:
+      - id: zeroes-and-ones
+        name: Zeroes and Ones
+        description: |
+          Nowadays it's almost impossible to believe that computers are just zeroes and ones. But it's absolutely true. At the physical level, your device is made up of billions of tiny switches called transistors. A switch has just two states: it's either ON or OFF. Instead of saying OFF and ON every time, we simplify it by saying `0` for OFF and `1` for ON.
+
+          Now you can imagine that we might be able to use a sequence of `0`s and `1`s to represent something. It turns out computer scientists did exactly this!
+
+          In fact, every single piece of data on your device, whether it's a movie, a voice note, or a password, is just a bunch of zeroes and ones. This sequence of zeroes and ones is known as binary.
+
+          ## Core units of data
+
+          **A bit** (binary digit): a single `0` or `1`. It's the same thing mentioned earlier: a switch that is either on or off.
+
+          **A byte:** a group of 8 bits. Example: `10110101`
+
+          In C and modern computer architecture, 1 byte is the smallest addressable unit. You cannot address a single bit in memory, though there are ways to work with individual bits, as you'll see later.
+
+          ## How to read an 8-bit byte
+
+          So far we have discussed what binary is and how you write it. Now let's learn to read it. However, before learning to read the computer's number system, let's recall our normal everyday number system from grade school. In normal everyday life, we use decimal, or base-10. Base-10 sounds cryptic, but all it means is that each column is worth 10 times the column to its right. Take the number 123, a hundred and twenty-three. The 3 is in the ones place, the 2 is in the tens place, and the 1 is in the hundreds place. Each column's place value, going from right to left, is multiplied by 10.
+
+          Okay, that was simple. Now what would happen if, instead of each column being worth 10 times the one to its right, it were worth 2 times? Well, you would get base-2! I know you didn't understand shit, so let's slow down and look at what's going on!
+
+          So imagine you have the number `1011`. If it were a decimal number, you would start by multiplying the rightmost digit, the 1, by 1. Recall from grade school that, in fact, that's what you are actually doing in your mind under the hood in decimal.
+
+          You do the following in your brain:
+
+          ```
+          Place      1000s      100s       10s        1s
+          Digit      1          0          1          1
+          Multiply   1 x 1000   0 x 100    1 x 10     1 x 1
+          ```
+
+          Now the same idea, but instead of each column being worth 10 times the one to its right, it's worth 2 times.
+
+          ```
+          Place      8s         4s         2s         1s
+          Digit      1          0          1          1
+          Multiply   1 x 8      0 x 4      1 x 2      1 x 1
+          ```
+
+          8 + 0 + 2 + 1 = 11. So `1011` in binary is 11 in decimal.
+
+          So no matter how long the binary is, to convert a binary number, you just need to add all the values which are switched on. Like just add the column values where the `1` is switched ON.
+
+          Example: `01000001`
+
+          ```
+          Place   128   64   32   16   8   4   2   1
+          Bit     0     1    0    0    0   0   0   1
+          ```
+
+          The 64 and 1 columns are ON.
+
+          64 + 1 = 65
+
+          So `01000001` in binary is 65 in decimal.
+
+          If all 8 bits are turned ON, we get 255. If all bits are turned OFF, we get the value 0. So 8 bits, or 1 byte, can store a value anywhere from 0 to 255, which is 256 values in total, including 0.
+
+          ## Why does a hacker care?
+
+          What happens when a byte is holding 255 (`11111111`) and a program adds 1 to it? Recall that a byte can store only 8 bits. The carry-over digit falls off the edge, and the byte is now 0 (`00000000`) instead of 256. You have just discovered something critical: an **integer overflow**. We will come back to this later.
+
+          Run `/challenge/run` and convert the bytes it shows you to decimal to get the flag.
