@@ -268,3 +268,108 @@ modules:
           So from now on, when you see `0x` something, don't panic. It's just bytes, two digits at a time.
 
           Run `/challenge/run` to get the flag. It will ask you to convert bytes between hex, decimal, and binary.
+      - id: ascii
+        name: ASCII
+        description: |
+          A computer stores only numbers. When you type A on your device, the computer does not draw the letter A under the hood. All it stores is, recall, tiny switches. So how does it store the letter A, a question mark, or a password?
+
+          Well, people simply agreed on a table where every character gets its own number. To store a character, the computer stores its number. To show it, the computer looks up the number in the table and displays that character.
+
+          The most important such table is ASCII (say "ask-ee"), short for American Standard Code for Information Interchange. It dates from the 1960s and is still used today.
+
+          ## The table
+
+          ASCII has 128 characters, numbered 0 to 127. That needs only 7 bits, so every ASCII character fits in one byte with a bit to spare.
+
+          ```
+          Dec  Hex   Char    Dec  Hex   Char    Dec  Hex   Char    Dec  Hex   Char
+          0    0x00  NUL     32   0x20  SPACE   64   0x40  @       96   0x60  `
+          1    0x01  SOH     33   0x21  !       65   0x41  A       97   0x61  a
+          2    0x02  STX     34   0x22  "       66   0x42  B       98   0x62  b
+          3    0x03  ETX     35   0x23  #       67   0x43  C       99   0x63  c
+          4    0x04  EOT     36   0x24  $       68   0x44  D       100  0x64  d
+          5    0x05  ENQ     37   0x25  %       69   0x45  E       101  0x65  e
+          6    0x06  ACK     38   0x26  &       70   0x46  F       102  0x66  f
+          7    0x07  BEL     39   0x27  '       71   0x47  G       103  0x67  g
+          8    0x08  BS      40   0x28  (       72   0x48  H       104  0x68  h
+          9    0x09  TAB     41   0x29  )       73   0x49  I       105  0x69  i
+          10   0x0A  LF      42   0x2A  *       74   0x4A  J       106  0x6A  j
+          11   0x0B  VT      43   0x2B  +       75   0x4B  K       107  0x6B  k
+          12   0x0C  FF      44   0x2C  ,       76   0x4C  L       108  0x6C  l
+          13   0x0D  CR      45   0x2D  -       77   0x4D  M       109  0x6D  m
+          14   0x0E  SO      46   0x2E  .       78   0x4E  N       110  0x6E  n
+          15   0x0F  SI      47   0x2F  /       79   0x4F  O       111  0x6F  o
+          16   0x10  DLE     48   0x30  0       80   0x50  P       112  0x70  p
+          17   0x11  DC1     49   0x31  1       81   0x51  Q       113  0x71  q
+          18   0x12  DC2     50   0x32  2       82   0x52  R       114  0x72  r
+          19   0x13  DC3     51   0x33  3       83   0x53  S       115  0x73  s
+          20   0x14  DC4     52   0x34  4       84   0x54  T       116  0x74  t
+          21   0x15  NAK     53   0x35  5       85   0x55  U       117  0x75  u
+          22   0x16  SYN     54   0x36  6       86   0x56  V       118  0x76  v
+          23   0x17  ETB     55   0x37  7       87   0x57  W       119  0x77  w
+          24   0x18  CAN     56   0x38  8       88   0x58  X       120  0x78  x
+          25   0x19  EM      57   0x39  9       89   0x59  Y       121  0x79  y
+          26   0x1A  SUB     58   0x3A  :       90   0x5A  Z       122  0x7A  z
+          27   0x1B  ESC     59   0x3B  ;       91   0x5B  [       123  0x7B  {
+          28   0x1C  FS      60   0x3C  <       92   0x5C  \       124  0x7C  |
+          29   0x1D  GS      61   0x3D  =       93   0x5D  ]       125  0x7D  }
+          30   0x1E  RS      62   0x3E  >       94   0x5E  ^       126  0x7E  ~
+          31   0x1F  US      63   0x3F  ?       95   0x5F  _       127  0x7F  DEL
+          ```
+
+          The first column (0 to 31) and the very last one (127) are control characters. You can't see them on screen; they are instructions like "new line" (LF) and "tab" (TAB). Everything else is a character you can actually print.
+
+          These are the ones worth remembering:
+
+          ```
+          Character        Decimal   Hex
+          null (nothing)   0         0x00
+          new line         10        0x0A
+          space            32        0x20
+          0                48        0x30
+          A                65        0x41
+          a                97        0x61
+          ```
+
+          You don't need to memorize the rest. Type `man ascii` in the terminal to see the whole table whenever you want.
+
+          ## Three patterns that make it easy
+
+          1. **Letters and digits are in order.** A is 65, B is 66, and so on. Same for a to z, and 0 to 9. Know where a group starts and you are good to go.
+          2. **Upper and lower case are exactly 32 apart.** A is 65 and a is 97. In hex that's `0x41` and `0x61`, a difference of `0x20`, which is a single bit: recall, the 32s place. Flip that one bit and you change the case. Bit flipping is taught properly in the Computing 101 dojo!
+          3. **The character 5 is not the number 5.** The character `5` is stored as 53, because the digits start at 48.
+
+          ## Text is just bytes in a row
+
+          A word is stored as one byte per character, side by side. Take "Hi":
+
+          ```
+          Character   H      i
+          Decimal     72     105
+          Hex         0x48   0x69
+          ```
+
+          In the hex lesson, you saw the bytes `48 65 6c 6c 6f`. Go and look up what they mean now.
+
+          Odds are you didn't go and look them up, so now pause and actually go and look them up.
+
+          As you can see, they mean H, e, l, l, o. Those hex bytes were the word "Hello" all along.
+
+          ## The big idea: bytes have no meaning on their own
+
+          The byte `0x41` is the number 65. It is also the letter A. Which one is it?
+
+          Both. The byte is just a pattern of bits. It becomes a number or a letter only when a program decides how to read it.
+
+          C makes this very visible: a character in C is just a small number, so `'A' + 1` gives you `'B'`. Because A is `0x41`, and `0x41 + 1` is `0x42`, which is B.
+
+          ## Why does a hacker care?
+
+          - **Reading memory.** Hex dumps show raw bytes. Knowing that `0x41` to `0x5A` are capital letters lets you spot text hiding in memory at a glance.
+          - **The null byte.** In C, byte 0 marks the end of a piece of text. A lot of famous bugs come from that one byte being missing or in the wrong place. This comes back in the strings module.
+          - **Invisible characters.** New line (`0x0A`) and the other control characters are real bytes in your input even though you can't see them. Programs that forget this get surprised.
+          - **The famous AAAA.** Hackers often feed a program a long run of the letter A. If `0x41414141` later shows up somewhere it shouldn't, they know their input ended up there.
+
+          ## One note on other languages
+
+          ASCII covers only English letters. Other alphabets and emoji use Unicode, which is something like a much bigger ASCII. It is usually stored as UTF-8, where one character can take several bytes. UTF-8 was designed so that its first 128 characters are exactly the same as ASCII's, so everything taught here still works there.
