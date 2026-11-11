@@ -373,3 +373,5 @@ modules:
           ## One note on other languages
 
           ASCII covers only English letters. Other alphabets and emoji use Unicode, which is something like a much bigger ASCII. It is usually stored as UTF-8, where one character can take several bytes. UTF-8 was designed so that its first 128 characters are exactly the same as ASCII's, so everything taught here still works there.
+
+          Run `/challenge/run` to get the flag. It will ask you to turn bytes into text, text into bytes, flip the case of a letter, and watch out for the digit trap!
