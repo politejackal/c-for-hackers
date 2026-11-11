@@ -1,0 +1,22 @@
+#!/usr/bin/exec-suid -- /usr/local/bin/python -I
+
+import random
+
+ROUNDS = 3
+
+print(f"Convert {ROUNDS} bytes from binary to decimal.")
+print()
+
+for i in range(1, ROUNDS + 1):
+    value = random.randint(1, 255)
+    print(f"[{i}/{ROUNDS}] What is {value:08b} in decimal?")
+    answer = input("> ").strip()
+    if answer != str(value):
+        print(f"Not quite. {value:08b} is {value}. Run me again to retry!")
+        raise SystemExit(1)
+    print("Correct!")
+    print()
+
+print("Well done! Here is your flag:")
+with open("/flag") as f:
+    print(f.read())
