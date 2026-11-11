@@ -85,8 +85,42 @@ modules:
 
           If all 8 bits are turned ON, we get 255. If all bits are turned OFF, we get the value 0. So 8 bits, or 1 byte, can store a value anywhere from 0 to 255, which is 256 values in total, including 0.
 
+          But why 256? Well, every time you add one more bit, you double how many values you can store. 1 bit gives you 2 values, 2 bits give you 4, 3 bits give you 8, and it just keeps doubling. So the rule is: n bits give you 2^n values. For a byte, that's 2^8, which is 256!
+
+          Oh, and the two ends of a byte have names. You will hear these a lot, so remember them:
+
+          - The leftmost bit is called the **most significant bit** (MSB), because it's worth the most: 128.
+          - The rightmost bit is called the **least significant bit** (LSB), because it's worth the least: just 1.
+
+          ## Going the other way: decimal to binary
+
+          Okay, so now you can read binary. But what if you have a normal decimal number, like 77, and you want to turn it into binary? It turns out you already know everything you need! You use the exact same column values, just the other way around.
+
+          So you start from the biggest column, the 128, and go to the right. At every column you ask yourself just one question: does this value fit into what I have left?
+
+          - If it fits, you switch that bit ON (`1`) and subtract the value from what you have left.
+          - If it doesn't fit, you leave that bit OFF (`0`) and move on to the next column.
+
+          Sounds confusing? Let's just do it with 77 and you will see how simple it is:
+
+          ```
+          Place   Fits?                 Bit   Left
+          128     No  (128 > 77)        0     77
+          64      Yes (77 - 64 = 13)    1     13
+          32      No  (32 > 13)         0     13
+          16      No  (16 > 13)         0     13
+          8       Yes (13 - 8 = 5)      1     5
+          4       Yes (5 - 4 = 1)       1     1
+          2       No  (2 > 1)           0     1
+          1       Yes (1 - 1 = 0)       1     0
+          ```
+
+          Now just read the Bit column from top to bottom and you get `01001101`. So 77 in decimal is `01001101` in binary. That's it!
+
+          Not sure if you got it right? Just convert it back like you learned earlier: 64 + 8 + 4 + 1 = 77.
+
           ## Why does a hacker care?
 
           What happens when a byte is holding 255 (`11111111`) and a program adds 1 to it? Recall that a byte can store only 8 bits. The carry-over digit falls off the edge, and the byte is now 0 (`00000000`) instead of 256. You have just discovered something critical: an **integer overflow**. We will come back to this later.
 
-          Run `/challenge/run` and convert the bytes it shows you to decimal to get the flag.
+          Run `/challenge/run` to get the flag. It will ask you to convert some bytes from binary to decimal, and then some numbers from decimal to binary.
