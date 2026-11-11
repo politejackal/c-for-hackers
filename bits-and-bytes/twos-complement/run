@@ -1,0 +1,127 @@
+#!/usr/bin/exec-suid -- /usr/local/bin/python -I
+
+import random
+
+
+def fail(message):
+    print(message)
+    print("Run me again to retry!")
+    raise SystemExit(1)
+
+
+def signed(byte):
+    """Read a byte (0-255) the two's complement way."""
+    return byte - 256 if byte >= 128 else byte
+
+
+def read_number(text):
+    text = text.strip()
+    try:
+        return int(text)
+    except ValueError:
+        fail("That is not a number. Type something like 42 or -42.")
+
+
+def read_hex_byte(text):
+    text = text.strip().lower().replace(" ", "")
+    if text.startswith("0x"):
+        text = text[2:]
+    if not text or len(text) > 2 or any(c not in "0123456789abcdef" for c in text):
+        fail("That is not a hex byte. Use 1 or 2 hex digits, like 0xFB.")
+    return int(text, 16)
+
+
+def ask(question):
+    print(question)
+    return input("> ")
+
+
+# ---------------------------------------------------------------------------
+print("Part 1: read a signed byte.")
+print()
+for i in (1, 2):
+    byte = random.randint(129, 254)
+    answer = read_number(ask(f"[{i}/2] What is {byte:08b} as a signed byte?"))
+    if answer != signed(byte):
+        fail(f"Not quite. {byte:08b} as a signed byte is {signed(byte)}.")
+    print("Correct!")
+    print()
+
+# ---------------------------------------------------------------------------
+print("Part 2: make a number negative.")
+print("Answer with the byte in hex, like 0xFB.")
+print()
+for i in (1, 2):
+    value = random.randint(2, 127)
+    byte = (-value) & 0xFF
+    answer = read_hex_byte(ask(f"[{i}/2] What byte stores -{value} ?"))
+    if answer != byte:
+        fail(f"Not quite. -{value} is stored as 0x{byte:02X} ({byte:08b}).")
+    print("Correct!")
+    print()
+
+# ---------------------------------------------------------------------------
+print("Part 3: same bits, two meanings.")
+print()
+byte = random.randint(129, 254)
+answer = read_number(ask(f"[1/2] What is 0x{byte:02X} as an unsigned byte?"))
+if answer != byte:
+    fail(f"Not quite. 0x{byte:02X} as an unsigned byte is {byte}.")
+print("Correct!")
+print()
+answer = read_number(ask(f"[2/2] And what is the same 0x{byte:02X} as a signed byte?"))
+if answer != signed(byte):
+    fail(f"Not quite. 0x{byte:02X} as a signed byte is {signed(byte)}.")
+print("Correct!")
+print()
+
+# ---------------------------------------------------------------------------
+print("Part 4: fall off the edge.")
+print()
+start = random.randint(100, 127)
+add = random.randint(128 - start, 60)
+result = signed((start + add) & 0xFF)
+answer = read_number(
+    ask(f"[1/1] A signed byte holds {start}. The program adds {add}. What does it hold now?")
+)
+if answer != result:
+    fail(
+        f"Not quite. {start} + {add} = {start + add}, which does not fit in a signed byte.\n"
+        f"The bits are {(start + add) & 0xFF:08b}, and as a signed byte that is {result}."
+    )
+print("Correct!")
+print()
+
+# ---------------------------------------------------------------------------
+need = random.randint(150, 240)
+print("Part 5: break it!")
+print()
+print("Here is a guard and a vault. Both look at the SAME byte, which you choose.")
+print()
+print("  The guard reads your byte as SIGNED.")
+print("  He only lets you through if it is less than 100.")
+print()
+print("  The vault reads your byte as UNSIGNED.")
+print(f"  It only opens if it is at least {need}.")
+print()
+print(f"The guard thinks nobody below 100 could ever reach {need}. Prove him wrong.")
+print()
+choice = read_number(ask("Choose your byte (a number from 0 to 255):"))
+if not 0 <= choice <= 255:
+    fail("That does not fit in a byte. Choose a number from 0 to 255.")
+
+print()
+print(f"Your byte is {choice:08b}.")
+print(f"The guard reads it as {signed(choice)}.")
+if not signed(choice) < 100:
+    fail("That is not less than 100. The guard stops you.")
+print("That is less than 100. The guard lets you through!")
+print(f"The vault reads it as {choice}.")
+if not choice >= need:
+    fail(f"That is not at least {need}. The vault stays closed.")
+print(f"That is at least {need}. The vault opens!")
+print()
+
+print("Well done! Here is your flag:")
+with open("/flag") as f:
+    print(f.read())
