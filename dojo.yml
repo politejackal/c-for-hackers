@@ -476,3 +476,5 @@ modules:
           - **Spotting -1.** `0xFF`, `0xFFFF` and `0xFFFFFFFF` are all -1, just in different sizes. And -1 is what a lot of C functions give you back when something went wrong.
 
           By the way, I only used 1 byte here to keep it simple, but the same trick works for any size. The leftmost bit is always the negative one.
+
+          Run `/challenge/run` to get the flag. It will ask you to read signed bytes, make numbers negative, read the same byte both ways, and work out what happens when a signed byte overflows. The last part is your first break: a guard and a vault that read the same byte in two different ways.
